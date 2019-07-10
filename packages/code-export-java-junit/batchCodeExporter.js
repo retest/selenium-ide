@@ -64,7 +64,7 @@ export default function batchExportSuitCode(){
   await FileHound.create()
     .paths(filesPath)
     .ext(filesType)
-    .find().then((arr) => {files = arr});
+    .find().then((arr) => {files = arr}).catch(error => console.log(error.message));
 
   for (const item of files) {
     var filename = path.parse(item).base;
@@ -76,7 +76,7 @@ export default function batchExportSuitCode(){
         }
         console.log("The file:",result.filename," was saved!")
       })
-    });
+    }).catch(error => console.log(error.message, ' in ' ,item));
   }
 }
 
