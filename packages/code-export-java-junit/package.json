@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@seleniumhq/side-utils": "^3.11.1",
+    "filehound" : "^1.17.1",
     "esm": "^3.2.25"
   }
 }
