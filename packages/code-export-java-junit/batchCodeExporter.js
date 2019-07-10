@@ -3,8 +3,8 @@ var path = require('path');
 const FileHound = require('filehound');
 import { emitTest, emitSuite } from './src'
 import { normalizeTestsInSuite } from '../selenium-ide/src/neo/IO/normalize'
-const filesPath = '/home/varun/Downloads/SeleniumTests'
-const downloadPath = path.join(filesPath,'Junit')
+const filesPath = '.' // path to the folder containing SIDE files
+const downloadPath = path.join(filesPath,'Junit') // Will by default create a JUnit folder in {filesPath}
 const filesType = 'side'
 
 function readFile(file) {
