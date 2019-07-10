@@ -18,13 +18,14 @@
 import { codeExport as exporter } from '@seleniumhq/side-utils'
 import emitter from './command'
 import location from './location'
-import { generateHooks } from './hook'
+import { setJavaPackage, generateHooks } from './hook'
 
 // Define language options
 export const displayName = 'Java JUnit'
 
 export let opts = {}
 opts.emitter = emitter
+setJavaPackage('package de.retest.surili.testdatageneration')
 opts.hooks = generateHooks()
 opts.fileExtension = '.java'
 opts.commandPrefixPadding = '  '
