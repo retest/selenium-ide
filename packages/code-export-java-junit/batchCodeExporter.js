@@ -54,7 +54,7 @@ async function emitSuitCode(file) {
  * SIDE files must be present in {filesPath}
  * Java JUnit files will be saved in {downloadPath}
  */
-export default function batchExportSuitCode(){
+async function batchExportSuitCode(){
   try {
     fs.mkdirSync(downloadPath, { recursive: true } )
   } catch (e) {
