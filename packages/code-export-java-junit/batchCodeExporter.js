@@ -1,8 +1,8 @@
 import fs from 'fs'
 var path = require('path');
 const FileHound = require('filehound');
-import { normalizeTestsInSuite } from './packages/selenium-ide/src/neo/IO/normalize'
-import { emitTest, emitSuite } from './packages/code-export-java-junit/src'
+import { emitTest, emitSuite } from './src'
+import { normalizeTestsInSuite } from '../selenium-ide/src/neo/IO/normalize'
 const filesPath = '/home/varun/Downloads/SeleniumTests'
 const downloadPath = path.join(filesPath,'Junit')
 const filesType = 'side'
@@ -13,6 +13,7 @@ function readFile(file) {
   )
 }
 
+/* Borrowed from end-to-end tests */
 function normalizeProject(project) {
   let _project = { ...project }
   _project.suites.forEach(suite => {
@@ -40,13 +41,12 @@ async function emitTestcaseCode(file) {
  * @param {full path to the SIDE file} file
  */
 async function emitSuitCode(file) {
-  const project = normalizeProject(readFile(file))
-  const results = await emitSuite({
-    baseUrl: project.url,
-    suite: project.suites[0],
-    tests: project.tests,
-  })
-  return results
+ const project = normalizeProject(readFile(file))
+ return await emitSuite({
+   baseUrl: project.url,
+   suite: project.suites[0],
+   tests: project.tests,
+ })
 }
 
 /**
@@ -60,25 +60,24 @@ export default function batchExportSuitCode(){
   } catch (e) {
       console.log('Cannot create folder ', e)
   }
-  const files = FileHound.create()
+  var files = []
+  await FileHound.create()
     .paths(filesPath)
     .ext(filesType)
-    .find()
+    .find().then((arr) => {files = arr});
 
-  files.then((arr) => {
-    arr.forEach(function(item, i)  {
-      var filename = path.parse(item).base;
-      console.log("Found",filename)
-      emitSuitCode(item).then((result) => {
-        fs.writeFile(path.join(downloadPath, result.filename), result.body, function(err) {
-          if(err) {
-              return console.log(err);
-          }
-          console.log("The file:",result.filename," was saved!")
-        })
+  for (const item of files) {
+    var filename = path.parse(item).base;
+    console.log("Found",filename)
+    await emitSuitCode(item).then((result) => {
+      fs.writeFile(path.join(downloadPath, result.filename), result.body, function(err) {
+        if(err) {
+            return console.log(err);
+        }
+        console.log("The file:",result.filename," was saved!")
       })
-    })
-  })
+    });
+  }
 }
 
 // Call the batch process function
