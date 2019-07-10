@@ -28,7 +28,11 @@ const emitters = {
   inEachBegin: empty,
   inEachEnd: empty,
 }
+var javaPackage = ""
 
+export function setJavaPackage(p){
+  javaPackage = p;
+}
 function generate(hookName) {
   return new exporter.hook(emitters[hookName]())
 }
@@ -94,8 +98,12 @@ function beforeEach() {
     startingSyntax: {
       commands: [
         { level: 0, statement: '@Before' },
-        { level: 0, statement: 'public void setUp() {' },
-        { level: 1, statement: 'driver = new FirefoxDriver();' },
+        { level: 0, statement: 'public void setUp() throws Exception {' },
+        { level: 1, statement: 'final SuriliProxy suriliProxy = SuriliProxy.getSeleniumProxy();' },
+        { level: 1, statement: 'final ChromeOptions chromeOptions = suriliProxy.getChromeOptions();' },
+        { level: 1, statement: 'final ChromeDriver driver = new ChromeDriver(chromeOptions);' },
+        { level: 1, statement: 'final SuriliOptions suriliOptions = SuriliOptions.builder().generateTrainingData(true).build();' },
+        { level: 1, statement: 'this.driver = new SuriliDriver("DataExtraction", driver, suriliProxy, suriliOptions);' },
         { level: 1, statement: 'js = (JavascriptExecutor) driver;' },
         { level: 1, statement: 'vars = new HashMap<String, Object>();' },
       ],
@@ -111,40 +119,51 @@ function declareDependencies() {
   const params = {
     startingSyntax: {
       commands: [
+        { level: 0, statement: javaPackage+';' },
+        { level: 0, statement: 'import java.util.Map;' },
+        { level: 0, statement: 'import java.util.HashMap;' },
+        { level: 0, statement: 'import java.util.Set;' },
+
         { level: 0, statement: 'import org.junit.Test;' },
         { level: 0, statement: 'import org.junit.Before;' },
         { level: 0, statement: 'import org.junit.After;' },
-        { level: 0, statement: 'import static org.junit.Assert.*;' },
-        { level: 0, statement: 'import static org.hamcrest.CoreMatchers.is;' },
-        { level: 0, statement: 'import static org.hamcrest.core.IsNot.not;' },
+        // { level: 0, statement: 'import static org.junit.Assert.*;' },
+        // { level: 0, statement: 'import static org.hamcrest.CoreMatchers.is;' },
+        // { level: 0, statement: 'import static org.hamcrest.core.IsNot.not;' },
         { level: 0, statement: 'import org.openqa.selenium.By;' },
-        { level: 0, statement: 'import org.openqa.selenium.WebDriver;' },
-        {
-          level: 0,
-          statement: 'import org.openqa.selenium.firefox.FirefoxDriver;',
-        },
+        // { level: 0, statement: 'import org.openqa.selenium.WebDriver;' },
+        // {
+        //   level: 0,
+        //   statement: 'import org.openqa.selenium.firefox.FirefoxDriver;',
+        // },
         { level: 0, statement: 'import org.openqa.selenium.Dimension;' },
         { level: 0, statement: 'import org.openqa.selenium.WebElement;' },
         {
           level: 0,
-          statement: 'import org.openqa.selenium.interactions.Actions;',
-        },
-        {
-          level: 0,
-          statement:
-            'import org.openqa.selenium.support.ui.ExpectedConditions;',
-        },
-        {
-          level: 0,
-          statement: 'import org.openqa.selenium.support.ui.WebDriverWait;',
-        },
-        {
-          level: 0,
           statement: 'import org.openqa.selenium.JavascriptExecutor;',
         },
-        { level: 0, statement: 'import org.openqa.selenium.Alert;' },
+        {
+          level: 0,
+          statement: 'import org.openqa.selenium.interactions.Actions;',
+        },
+        { level: 0, statement: 'import org.openqa.selenium.chrome.ChromeDriver;' },
+        { level: 0, statement: 'import org.openqa.selenium.chrome.ChromeOptions;' },
+        // {
+        //   level: 0,
+        //   statement:
+        //     'import org.openqa.selenium.support.ui.ExpectedConditions;',
+        // },
+        // {
+        //   level: 0,
+        //   statement: 'import org.openqa.selenium.support.ui.WebDriverWait;',
+        // },
+
+        // { level: 0, statement: 'import org.openqa.selenium.Alert;' },
         { level: 0, statement: 'import org.openqa.selenium.Keys;' },
-        { level: 0, statement: 'import java.util.*;' },
+        // { level: 0, statement: 'import java.util.*;' },
+        { level: 0, statement: 'import de.retest.surili.web.SuriliDriver;' },
+        { level: 0, statement: 'import de.retest.surili.web.SuriliOptions;' },
+        { level: 0, statement: 'import de.retest.surili.web.SuriliProxy;' },
       ],
     },
   }
@@ -155,7 +174,7 @@ function declareVariables() {
   const params = {
     startingSyntax: {
       commands: [
-        { level: 0, statement: 'private WebDriver driver;' },
+        { level: 0, statement: 'private SuriliDriver driver;' },
         {
           level: 0,
           statement: 'private Map<String, Object> vars;',
