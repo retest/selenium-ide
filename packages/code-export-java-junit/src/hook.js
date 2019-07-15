@@ -101,6 +101,7 @@ function beforeEach() {
         { level: 0, statement: 'public void setUp() throws Exception {' },
         { level: 1, statement: 'final SuriliProxy suriliProxy = SuriliProxy.getSeleniumProxy();' },
         { level: 1, statement: 'final ChromeOptions chromeOptions = suriliProxy.getChromeOptions();' },
+        { level: 1, statement: 'chromeOptions.addArguments(WebDriverFactory.commonArguments());' },
         { level: 1, statement: 'final ChromeDriver driver = new ChromeDriver(chromeOptions);' },
         { level: 1, statement: 'final SuriliOptions suriliOptions = SuriliOptions.builder().generateTrainingData(true).build();' },
         { level: 1, statement: 'this.driver = new SuriliDriver("DataExtraction", driver, suriliProxy, suriliOptions);' },
@@ -164,6 +165,7 @@ function declareDependencies() {
         { level: 0, statement: 'import de.retest.surili.web.SuriliDriver;' },
         { level: 0, statement: 'import de.retest.surili.web.SuriliOptions;' },
         { level: 0, statement: 'import de.retest.surili.web.SuriliProxy;' },
+        { level: 0, statement: 'import de.retest.surili.testutil.WebDriverFactory;' },
       ],
     },
   }
